@@ -1,30 +1,43 @@
 package com.enigpus;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import com.enigpus.model.BookModel;
 import com.enigpus.util.Helper;
 
 public class InventoryServiceImpl implements InventoryService {
-    private List<BookModel> tempBooks = new ArrayList<>();
+    private List<BookModel> memoryBooks = new ArrayList<>();
 
     @Override
     public void addBook(BookModel book) {
-        tempBooks.add(book);
+        memoryBooks.add(book);
     }
 
-    public void listBookToCSV() {
-        if (tempBooks.size() > 0) {
-            Helper.convertToCSV(tempBooks, "src/main/java/com/enigpus/files/books.csv");
+    public void initializeMemoryToDatabase() {
+        Helper.convertToCSV(memoryBooks, Constant.BOOKS_PATH);
+    }
+    
+    public void appendMemoryToDatabase() {
+        Helper.appendToCSV(memoryBooks, Constant.BOOKS_PATH);
+    }
+
+    public void memoryToDatabase() throws FileNotFoundException {
+        List<List<String>> databaseBooks = Helper.convertFromCSV(Constant.BOOKS_PATH);
+        int dataExist = 1;
+        
+        if (!(memoryBooks.isEmpty()) && databaseBooks.size() < dataExist) {
+            initializeMemoryToDatabase();
+        } else if (!(memoryBooks.isEmpty()) && databaseBooks.size() > dataExist) {  
+            appendMemoryToDatabase();
         } else {
-            System.out.println("cannot add book. there's no book in the list");
+            System.out.println("cannot add book. there's no book in the memory or database");
         }
     }
 
     @Override
     public void searchBookByTitle(String title) {
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
+        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
         for (List<String> book : books) {
             if (book.get(1).toLowerCase().equals(title.toLowerCase())) {
@@ -42,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public BookModel searchBookById(String id) {  
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
+        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
 
         for (List<String> book : books) {
@@ -64,33 +77,51 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void deleteBook(String id) {
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
-        books.remove(0);
-
-        for (List<String> book : books) {
-            if (book.get(0).toLowerCase().equals(id.toLowerCase())) {
-                System.out.println("data deleted");
+    public void deleteBook(Integer id) throws IndexOutOfBoundsException, FileNotFoundException {
+        if (memoryBooks.isEmpty()) {
+            transferDBDataToMemory(Constant.BOOKS_PATH);
+            if (memoryBooks.isEmpty()) {
+                System.out.println("Please Insert Your Books First.");
+                return;
             }
+        }
+
+        BookModel book = memoryBooks.get(id-1);
+        if (memoryBooks.contains(book)) {
+            System.out.printf("""
+                        == Deleting Book..
+                        Id: %s,
+                        Code: %s,
+                        Title: %s,
+                        Type: %s,
+                        Publication Year: %s
+                        \n""",id,book.getCode(),book.getTitle(),book.getType(),memoryBooks.get(id-1).getPublicationYear());
+            memoryBooks.remove(book);
+            System.out.println("Book removed from memory.");
+            memoryToDatabase();
+            System.out.println("Database updated.");
+        } else {
+            System.out.println("Cannot find book in the inventory.");
         }
     }
 
     @Override
     public void listBooks() {
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
+        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
-        for (List<String> book : books) {
+        for (int i=0; i<books.size(); i++) {
             System.out.printf("""
+                    Id: %s,
                     Code: %s,
                     Title: %s,
                     Type: %s,
                     Publication Year: %s
-                    \n""",book.get(0),book.get(1),book.get(2),book.get(3));
+                    \n""",i+1,books.get(i).get(0),books.get(i).get(1),books.get(i).get(2),books.get(i).get(3));
         }
     }
 
     public Integer searchBookIdByCode(String code) {
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
+        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
 
         for (List<String> book : books) {
@@ -99,7 +130,7 @@ public class InventoryServiceImpl implements InventoryService {
             type = book.get(2);
             publication = book.get(3);
             BookModel bookToAppend = new BookModel(code, title, type, publication);
-            tempBooks.add(0, bookToAppend);
+            memoryBooks.add(0, bookToAppend);
 
             if (book.get(0).toLowerCase().equals(code.toLowerCase())) {
                 System.out.printf("""
@@ -118,13 +149,32 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public void EditBook(String id, BookModel bookModel) {
-        List<List<String>> books = Helper.convertFromCSV("src/main/java/com/enigpus/files/books.csv");
+        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
 
         for (List<String> book : books) {
             if (book.get(0).toLowerCase().equals(id.toLowerCase())) {
                 System.out.println("data edited");
             }
+        }
+    }
+
+    /**
+     * Get Data From CSV Database Resource to Memory for Indexing
+     * @param filepath
+     */
+    public void transferDBDataToMemory(String filepath) {
+        List<List<String>> books = Helper.convertFromCSV(filepath);
+        books.remove(0);
+        memoryBooks.clear();
+        for (List<String> book : books) {
+            String code = book.get(0);
+            String title = book.get(1);
+            String type = book.get(2);
+            String publicationYear = book.get(3);
+
+            BookModel bookModel = new BookModel(code, title, type, publicationYear);
+            memoryBooks.add(bookModel);
         }
     }
     

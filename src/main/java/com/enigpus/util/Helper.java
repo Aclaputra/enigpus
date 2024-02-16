@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.enigpus.model.BookModel;
 
+
 /**
  * rule : format  YYYY-A-xxxxx untuk novel, dan YYYY-B-xxxxx untuk majalah
  */
@@ -19,22 +20,27 @@ public class Helper {
         String bookTypeCode = "";
         UUID code = UUID.randomUUID();
 
-        if (type.equals("novel")) 
+        if (type.toLowerCase().equals("novel")) 
             bookTypeCode = "A";
-        else if (type.equals("majalah"))
+        else if (type.toLowerCase().equals("majalah"))
             bookTypeCode = "B";
 
         return String.format("%s-%s-%s", year.toUpperCase(), bookTypeCode, code);
     }
 
+    public static void appendToCSV(List<BookModel> books, String filePath) {
+        try (FileWriter writer = new FileWriter(filePath)) {
+            writer.append("code,title,type,publication_year\n");
+            writeCSVData(writer, books, filePath);
+        } catch (IOException e) {
+            System.out.println("Error Message: " + e.getMessage());
+        }
+    } 
+
     public static void convertToCSV(List<BookModel> books, String filePath) {
         try (FileWriter writer = new FileWriter(filePath)) {
-            writer.write("code,title,type,publication_year\n");
-
-            for (BookModel object : books) {
-                BookModel book = (BookModel) object;
-                writer.write(book.getCode() + "," + book.getTitle() + "," + book.getType() + "," + book.getPublicationYear() + "\n");
-            }
+            writer.append("code,title,type,publication_year\n");
+            writeCSVData(writer, books, filePath);
         } catch (IOException e) {
             System.out.println("Error Message: " + e.getMessage());
         }
@@ -53,6 +59,18 @@ public class Helper {
         }
 
         return records;
+    }
+
+    public static void writeCSVData(FileWriter writer, List<BookModel> books, String filePath) throws IOException {
+        for (BookModel object : books) {
+            BookModel book = (BookModel) object;
+            writer.append(
+                book.getCode() + "," + 
+                book.getTitle() + "," + 
+                book.getType() + "," + 
+                book.getPublicationYear() + 
+                "\n");
+        } 
     }
 
 }

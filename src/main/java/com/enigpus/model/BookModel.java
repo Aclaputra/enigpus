@@ -7,7 +7,7 @@ import com.enigpus.util.Helper;
 /**
  * rule : format  YYYY-A-xxxxx untuk novel, dan YYYY-B-xxxxx untuk majalah
  */
-public class BookModel extends Book{
+public class BookModel extends Book {
     private String code;
     private String title;
     private String type;
@@ -37,6 +37,7 @@ public class BookModel extends Book{
         this.code = code;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

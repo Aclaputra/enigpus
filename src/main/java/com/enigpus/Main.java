@@ -1,5 +1,6 @@
 package com.enigpus;
 
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import com.enigpus.model.BookModel;
@@ -59,7 +60,11 @@ public class Main {
                         }
                     }
 
-                    inventoryService.listBookToCSV();
+                    try {
+                        inventoryService.memoryToDatabase();
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Error Message: " + e.getMessage());
+                    }
                     break;
                 case "2":
                     System.out.println("== Edit Book ==");
@@ -93,8 +98,14 @@ public class Main {
                 case "3":
                     System.out.println("== Remove Book ==");
                     System.out.println("Insert id product");
-                    String deleteid = sc.nextLine();
-                    inventoryService.deleteBook(deleteid);
+                    Integer deleteid = sc.nextInt();
+                    try {
+                        inventoryService.deleteBook(deleteid);
+                    } catch(IndexOutOfBoundsException e) {
+                        System.out.printf("Error Message: " + e.getMessage());
+                    } catch(FileNotFoundException e) {
+                        System.out.printf("Error Message: " + e.getMessage());
+                    }
                     break;
                 case "4":
                     System.out.println("== List Book ==");
