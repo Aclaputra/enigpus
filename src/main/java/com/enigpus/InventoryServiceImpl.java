@@ -7,15 +7,15 @@ import com.enigpus.model.BookModel;
 import com.enigpus.util.Helper;
 
 public class InventoryServiceImpl implements InventoryService {
-    private List<BookModel> memoryBooks = new ArrayList<>();
+    private static List<BookModel> memoryBooks = new ArrayList<>();
 
     @Override
     public void addBook(BookModel book) {
         memoryBooks.add(book);
     }
 
-    public void initializeMemoryToDatabase() {
-        Helper.convertToCSV(memoryBooks, Constant.BOOKS_PATH);
+    public static void clearMemory() {
+        memoryBooks.clear();
     }
     
     public void appendMemoryToDatabase() {
@@ -23,12 +23,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     public void memoryToDatabase() throws FileNotFoundException {
-        List<List<String>> databaseBooks = Helper.convertFromCSV(Constant.BOOKS_PATH);
-        int dataExist = 1;
-        
-        if (!(memoryBooks.isEmpty()) && databaseBooks.size() < dataExist) {
-            initializeMemoryToDatabase();
-        } else if (!(memoryBooks.isEmpty()) && databaseBooks.size() > dataExist) {  
+        if (!(memoryBooks.isEmpty())) {
             appendMemoryToDatabase();
         } else {
             System.out.println("cannot add book. there's no book in the memory or database");
@@ -106,7 +101,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void listBooks() {
+    public void listBooks() throws IndexOutOfBoundsException {
         List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
         for (int i=0; i<books.size(); i++) {
@@ -118,33 +113,6 @@ public class InventoryServiceImpl implements InventoryService {
                     Publication Year: %s
                     \n""",i+1,books.get(i).get(0),books.get(i).get(1),books.get(i).get(2),books.get(i).get(3));
         }
-    }
-
-    public Integer searchBookIdByCode(String code) {
-        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
-        books.remove(0);
-
-        for (List<String> book : books) {
-            String type, title, publication;
-            title = book.get(1);
-            type = book.get(2);
-            publication = book.get(3);
-            BookModel bookToAppend = new BookModel(code, title, type, publication);
-            memoryBooks.add(0, bookToAppend);
-
-            if (book.get(0).toLowerCase().equals(code.toLowerCase())) {
-                System.out.printf("""
-                    === book found ===
-                    Code: %s,
-                    Title: %s,
-                    Type: %s,
-                    Publication Year: %s
-                    \n""",book.get(0),book.get(1),book.get(2),book.get(3));
-                break;
-            }
-        }
-
-        return 0;
     }
 
     @Override

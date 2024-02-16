@@ -65,6 +65,7 @@ public class Main {
                     } catch (FileNotFoundException e) {
                         System.out.println("Error Message: " + e.getMessage());
                     }
+                    InventoryServiceImpl.clearMemory();
                     break;
                 case "2":
                     System.out.println("== Edit Book ==");
@@ -109,7 +110,11 @@ public class Main {
                     break;
                 case "4":
                     System.out.println("== List Book ==");
-                    inventoryService.listBooks();
+                    try {
+                        inventoryService.listBooks();
+                    } catch(IndexOutOfBoundsException e) {
+                        System.out.println("inventory on memory or database is empty.");
+                    }
                     break;
                 case "5":
                     System.out.println("== Search Book By Title ==");

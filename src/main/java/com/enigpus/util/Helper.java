@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.enigpus.Constant;
 import com.enigpus.model.BookModel;
 
 
@@ -29,8 +30,11 @@ public class Helper {
     }
 
     public static void appendToCSV(List<BookModel> books, String filePath) {
-        try (FileWriter writer = new FileWriter(filePath)) {
-            writer.append("code,title,type,publication_year\n");
+        List<List<String>> databaseBooks = Helper.convertFromCSV(Constant.BOOKS_PATH);
+        int dataExist = 1;
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            if (databaseBooks.size() < dataExist)
+                writer.append("code,title,type,publication_year\n");
             writeCSVData(writer, books, filePath);
         } catch (IOException e) {
             System.out.println("Error Message: " + e.getMessage());
