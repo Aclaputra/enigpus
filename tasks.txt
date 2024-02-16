@@ -1,0 +1,7 @@
+    (DONE) Buatlah sebuah abstract class Book dengan memiliki method abstract getTitle()
+    (DONE) Buatlah sebuah Interface dengan nama InventoryService yang memiliki method addBook(), searchBookByTitle(), searchBookById(), deleteBook(), serta getAllBook();
+    (DONE) Implementasikan interface dari InventoryService kedalam class InventoryServiceImpl, supaya transaksi create, read, update, delete inventory bisa digunakan.
+    (IN PROGRESS) Buat sebuah utility untuk membuat kode buku dengan format  YYYY-A-xxxxx untuk novel, dan YYYY-B-xxxxx untuk majalah, dimana YYYY adalah tahun terbit, dan xxxxx adalah counter
+    Handle semua error, terapkan validasi seperti semua inputan adalah mandatory, tahun terbit hanya berupa angka
+    (CLI IN PROGRESS) Buatlah tampilan menu yang dapat digunakan untuk memilih proses apa yang akan dilakukan oleh user dalam menjalankan program inventory Enigpus
+    (DONE) Semua class dan variable ditulis menggunakan Bahasa inggris dan sesuai dengan ketentuan penulisan nama variable dan kelas seperti yang telah diajarkan, serta terapkan arsitekurnya.
