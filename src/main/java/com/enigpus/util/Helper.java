@@ -29,11 +29,11 @@ public class Helper {
         return String.format("%s-%s-%s", year.toUpperCase(), bookTypeCode, code);
     }
 
-    public static void appendToCSV(List<BookModel> books, String filePath) {
+    public static void appendToCSV(List<BookModel> books, String filePath, boolean isAppend) {
         List<List<String>> databaseBooks = Helper.convertFromCSV(Constant.BOOKS_PATH);
         int dataExist = 1;
-        try (FileWriter writer = new FileWriter(filePath, true)) {
-            if (databaseBooks.size() < dataExist)
+        try (FileWriter writer = new FileWriter(filePath, isAppend)) {
+            if (databaseBooks.size() < dataExist || !isAppend)
                 writer.append("code,title,type,publication_year\n");
             writeCSVData(writer, books, filePath);
         } catch (IOException e) {

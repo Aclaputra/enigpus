@@ -7,8 +7,8 @@ import com.enigpus.model.BookModel;
 public interface InventoryService {
     void addBook(BookModel book);
     void searchBookByTitle(String title);
-    BookModel searchBookById(String id);
+    BookModel searchBookById(Integer id);
     void deleteBook(Integer id) throws IndexOutOfBoundsException, FileNotFoundException;
     void listBooks();
-    void EditBook(String id, BookModel book);
+    void EditBook(Integer id, BookModel book) throws FileNotFoundException;
 }

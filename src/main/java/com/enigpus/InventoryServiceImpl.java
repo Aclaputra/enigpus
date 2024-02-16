@@ -18,13 +18,13 @@ public class InventoryServiceImpl implements InventoryService {
         memoryBooks.clear();
     }
     
-    public void appendMemoryToDatabase() {
-        Helper.appendToCSV(memoryBooks, Constant.BOOKS_PATH);
+    public void appendMemoryToDatabase(boolean isAppend) {
+        Helper.appendToCSV(memoryBooks, Constant.BOOKS_PATH, isAppend);
     }
 
     public void memoryToDatabase() throws FileNotFoundException {
-        if (!(memoryBooks.isEmpty())) {
-            appendMemoryToDatabase();
+        if (!(memoryBooks.isEmpty()) ) {
+            appendMemoryToDatabase(true);
         } else {
             System.out.println("cannot add book. there's no book in the memory or database");
         }
@@ -37,38 +37,24 @@ public class InventoryServiceImpl implements InventoryService {
         for (List<String> book : books) {
             if (book.get(1).toLowerCase().equals(title.toLowerCase())) {
                 System.out.printf("""
+                    %n
                     === book found ===
                     Code: %s,
                     Title: %s,
                     Type: %s,
                     Publication Year: %s
-                    \n""",book.get(0),book.get(1),book.get(2),book.get(3));
+                    %n
+                """,book.get(0),book.get(1),book.get(2),book.get(3));
                 break;
             }
         }
     }
 
     @Override
-    public BookModel searchBookById(String id) {  
-        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
-        books.remove(0);
+    public BookModel searchBookById(Integer id) {  
+        transferDBDataToMemory(Constant.BOOKS_PATH);
 
-        for (List<String> book : books) {
-            if (book.get(0).toLowerCase().equals(id.toLowerCase())) {
-                System.out.printf("""
-                    === book found ===
-                    Code: %s,
-                    Title: %s,
-                    Type: %s,
-                    Publication Year: %s
-                    \n""",book.get(0),book.get(1),book.get(2),book.get(3));
-
-                BookModel foundBook = new BookModel(book.get(0),book.get(1),book.get(2),book.get(3));
-                return foundBook;
-            }
-        }
-
-        return new BookModel("", "", "");
+        return memoryBooks.get(id-1);
     }
 
     @Override
@@ -84,16 +70,18 @@ public class InventoryServiceImpl implements InventoryService {
         BookModel book = memoryBooks.get(id-1);
         if (memoryBooks.contains(book)) {
             System.out.printf("""
+                        %n
                         == Deleting Book..
                         Id: %s,
                         Code: %s,
                         Title: %s,
                         Type: %s,
                         Publication Year: %s
-                        \n""",id,book.getCode(),book.getTitle(),book.getType(),memoryBooks.get(id-1).getPublicationYear());
+                        %n
+                    """,id,book.getCode(),book.getTitle(),book.getType(),memoryBooks.get(id-1).getPublicationYear());
             memoryBooks.remove(book);
             System.out.println("Book removed from memory.");
-            memoryToDatabase();
+            appendMemoryToDatabase(false);
             System.out.println("Database updated.");
         } else {
             System.out.println("Cannot find book in the inventory.");
@@ -101,29 +89,56 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void listBooks() throws IndexOutOfBoundsException {
-        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
-        books.remove(0);
-        for (int i=0; i<books.size(); i++) {
-            System.out.printf("""
+    public void EditBook(Integer id, BookModel book) throws FileNotFoundException {
+        if (memoryBooks.isEmpty()) {
+            transferDBDataToMemory(Constant.BOOKS_PATH);
+            if (memoryBooks.isEmpty()) {
+                System.out.println("Please Insert Your Books First.");
+                return;
+            }
+        }
+        System.out.printf("""
+                    %n
+                    == Editing Book to..
                     Id: %s,
                     Code: %s,
                     Title: %s,
                     Type: %s,
                     Publication Year: %s
-                    \n""",i+1,books.get(i).get(0),books.get(i).get(1),books.get(i).get(2),books.get(i).get(3));
-        }
+                    %n
+                """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear());
+        deleteBook(id);
+        memoryBooks.clear();
+        memoryBooks.add(0, book);
+        System.out.printf("""
+                    %n
+                    == Book Editted to :
+                    Id: %s,
+                    Code: %s,
+                    Title: %s,
+                    Type: %s,
+                    Publication Year: %s
+                    %n
+                """,id,memoryBooks.get(0).getCode(),memoryBooks.get(0).getTitle(),memoryBooks.get(0).getType(),memoryBooks.get(0).getPublicationYear());
+
+        System.out.println("Book successfully edited in the memory.");
+        appendMemoryToDatabase(true);
+        System.out.println("Database updated.");
     }
 
     @Override
-    public void EditBook(String id, BookModel bookModel) {
-        List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
-        books.remove(0);
-
-        for (List<String> book : books) {
-            if (book.get(0).toLowerCase().equals(id.toLowerCase())) {
-                System.out.println("data edited");
-            }
+    public void listBooks() throws IndexOutOfBoundsException {
+        transferDBDataToMemory(Constant.BOOKS_PATH);
+        for (int i=0; i<memoryBooks.size(); i++) {
+            System.out.printf("""
+                    ============================
+                    Id: %s,
+                    Code: %s,
+                    Title: %s,
+                    Type: %s,
+                    Publication Year: %s
+                    %n
+                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear());
         }
     }
 

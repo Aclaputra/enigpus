@@ -69,8 +69,8 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("== Edit Book ==");
-                    System.out.println("Insert Book Code: ");
-                    String id = sc.nextLine();
+                    System.out.println("Insert Book Id: ");
+                    int id = Integer.parseInt(sc.nextLine());
                     String title2, type2, publicationYear2;
                     BookModel gotBook = inventoryService.searchBookById(id);
 
@@ -78,6 +78,7 @@ public class Main {
                     title2 = sc.nextLine().trim();
                     if (title2.equals("") || title2.equals(null))
                         title2 = gotBook.getTitle();
+
                     System.out.println("Insert publication year");
                     publicationYear2 = sc.nextLine().trim();
                     if (publicationYear2.equals("") || publicationYear2.equals(null)) 
@@ -85,15 +86,18 @@ public class Main {
 
                     System.out.println("Insert type");
                     type2 = sc.nextLine().trim();
-                    if (type2.equals("") || type2.equals(null)) {
+                    if (type2.equals("") || type2.equals(null)) 
                         type2 = gotBook.getType();
-                    }
 
                     gotBook.setTitle(title2);
                     gotBook.setPublicationYear(publicationYear2);
                     gotBook.setType(type2);
 
-                    inventoryService.EditBook(id, gotBook);
+                    try {
+                        inventoryService.EditBook(id, gotBook);
+                    } catch (FileNotFoundException e) {
+                        System.out.println("Error message: " + e.getMessage());
+                    }
 
                     break;
                 case "3":
