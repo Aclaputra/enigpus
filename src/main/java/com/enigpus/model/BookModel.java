@@ -15,6 +15,13 @@ public class BookModel extends Book{
         
     private Helper helper = new Helper();
     
+    public BookModel(String code, String title, String type, String publicationYear) {
+        this.code = code;
+        this.title = title;
+        this.type = type;
+        this.publicationYear = publicationYear;
+    }
+
     public BookModel(String title, String type, String publicationYear) {
         this.code = helper.generateCodeBook(publicationYear, type);
         this.title = title;

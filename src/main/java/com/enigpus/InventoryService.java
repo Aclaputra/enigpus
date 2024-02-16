@@ -1,21 +1,17 @@
 package com.enigpus;
 
-import java.util.List;
-
 import com.enigpus.model.BookModel;
 
 public interface InventoryService {
     void addBook(BookModel book);
 
-    BookModel searchBookByTitle(String title);
+    void searchBookByTitle(String title);
 
-    BookModel searchBookById(int id);
+    BookModel searchBookById(String id);
 
-    Integer searchBookIdByCode(String code);
+    void deleteBook(String id);
 
-    void deleteBook(int id);
-
-    List<BookModel> getAllBook();
+    void listBooks();
 
     void EditBook(String id, BookModel book);
 

@@ -28,30 +28,51 @@ public class Main {
             switch (input) {
                 case "1":
                     System.out.println("== Add Book ==");
-                    String title, type, publicationYear;
+                    boolean exitAdd = false;
+                    while(!exitAdd) {
+                        String title, type, publicationYear;
+                    
+                        System.out.println("Insert type");
+                        type = sc.nextLine();
+                        System.out.println("Insert title");
+                        title = sc.nextLine();
+                        System.out.println("publication year");
+                        publicationYear = sc.nextLine();
 
-                    System.out.println("Insert type");
-                    type = sc.nextLine();
-                    System.out.println("Insert title");
-                    title = sc.nextLine();
-                    System.out.println("publication year");
-                    publicationYear = sc.nextLine();
+                        BookModel book = new BookModel(title, type, publicationYear);
+                        inventoryService.addBook(book);
 
-                    BookModel book = new BookModel(title, type, publicationYear);
-                    inventoryService.addBook(book);
+                        System.out.println("""
+                            == Add another Book ? ==
+                            press Y / yes to continue, press N / no back to menu.
+                                """);
+                        
+                        String isAddBook = sc.nextLine();
+                        String res = isAddBook.toLowerCase();
+                        if (res.equals("y") || res.equals("yes")) {
+                            continue;
+                        } else if (res.equals("n") || res.equals("no")) {
+                            exitAdd = true;
+                        } else {
+                            System.out.println("command not found. back to menu.");
+                            exitAdd = true;
+                        }
+                    }
+
+                    inventoryService.listBookToCSV();
                     break;
                 case "2":
                     System.out.println("== Edit Book ==");
                     System.out.println("Insert Book Code: ");
                     String id = sc.nextLine();
                     String title2, type2, publicationYear2;
-                    BookModel gotBook = inventoryService.searchBookById(inventoryService.searchBookIdByCode(id));
+                    BookModel gotBook = inventoryService.searchBookById(id);
 
                     System.out.println("Insert title: ");
                     title2 = sc.nextLine().trim();
                     if (title2.equals("") || title2.equals(null))
                         title2 = gotBook.getTitle();
-                    System.out.println("Insert harga");
+                    System.out.println("Insert publication year");
                     publicationYear2 = sc.nextLine().trim();
                     if (publicationYear2.equals("") || publicationYear2.equals(null)) 
                         publicationYear2 = gotBook.getPublicationYear();
@@ -72,12 +93,12 @@ public class Main {
                 case "3":
                     System.out.println("== Remove Book ==");
                     System.out.println("Insert id product");
-                    String hapusId = sc.nextLine();
-                    inventoryService.deleteBook(inventoryService.searchBookIdByCode(hapusId));
+                    String deleteid = sc.nextLine();
+                    inventoryService.deleteBook(deleteid);
                     break;
                 case "4":
                     System.out.println("== List Book ==");
-                    inventoryService.getAllBook();
+                    inventoryService.listBooks();
                     break;
                 case "5":
                     System.out.println("== Search Book By Title ==");
