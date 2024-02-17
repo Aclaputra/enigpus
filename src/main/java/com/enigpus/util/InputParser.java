@@ -12,11 +12,25 @@ interface InputParserInterface {
 }
 
 public class InputParser implements InputParserInterface {
+    private static void drawWelcomePopUp() {
+        System.out.println("""
+            Welcome to
+            ███████╗███╗░░██╗██╗░██████╗░██████╗░██╗░░░██╗░██████╗
+            ██╔════╝████╗░██║██║██╔════╝░██╔══██╗██║░░░██║██╔════╝
+            █████╗░░██╔██╗██║██║██║░░██╗░██████╔╝██║░░░██║╚█████╗░
+            ██╔══╝░░██║╚████║██║██║░░╚██╗██╔═══╝░██║░░░██║░╚═══██╗
+            ███████╗██║░╚███║██║╚██████╔╝██║░░░░░╚██████╔╝██████╔╝
+            ╚══════╝╚═╝░░╚══╝╚═╝░╚═════╝░╚═╝░░░░░░╚═════╝░╚═════╝░
+            Made by https://github.com/Aclaputra
+                """);
+    }
+
     public static void closeScanner() {
         sc.close();
     }
 
     public static void beginScanning() {
+        drawWelcomePopUp();
         boolean exit = false;
         while (!exit) {
             System.out.println("""
@@ -243,7 +257,7 @@ public class InputParser implements InputParserInterface {
 
             System.out.println("""
                 == Add another Book ? ==
-                press Y / yes to break, press N / no back to menu.
+                press Y / yes or press N / no for back to menu.
                     """);
             
             String isAddBook = sc.nextLine();

@@ -46,6 +46,9 @@ public class InventoryServiceImpl implements InventoryService {
             if (type.equals("novel")) {
                 String author = book.get(4);
                 bookModel.setAuthor(author);
+            } else if (type.equals("majalah")) {
+                String period = book.get(5);
+                bookModel.setPublicationPeriode(period);
             }
             memoryBooks.add(bookModel);
         }
@@ -76,9 +79,10 @@ public class InventoryServiceImpl implements InventoryService {
                     Title: %s,
                     Type: %s,
                     Publication Year: %s,
-                    Author: %s
+                    Author: %s,
+                    Publication Period: %s
                     %n
-                """,book.get(0),book.get(1),book.get(2),book.get(3),book.get(4));
+                """,book.get(0),book.get(1),book.get(2),book.get(3),book.get(4),book.get(5));
                 break;
             }
         }
@@ -95,9 +99,10 @@ public class InventoryServiceImpl implements InventoryService {
                     Title: %s,
                     Type: %s,
                     Publication Year: %s,
-                    Author: %s
+                    Author: %s,
+                    Publication Period: %s
                     %n
-                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear(),memoryBooks.get(i).getAuthor());
+                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear(),memoryBooks.get(i).getAuthor(),memoryBooks.get(i).getPublicationPeriode());
         }
         clearMemory();
     }
@@ -122,9 +127,10 @@ public class InventoryServiceImpl implements InventoryService {
                         Title: %s,
                         Type: %s,
                         Publication Year: %s,
-                        Author: %s
+                        Author: %s,
+                        Publication Period: %s
                         %n
-                    """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor());
+                    """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor(),book.getPublicationPeriode());
             memoryBooks.remove(book);
             System.out.println("Book removed from memory.");
             appendMemoryToDatabase(false);
@@ -151,9 +157,10 @@ public class InventoryServiceImpl implements InventoryService {
                     Title: %s,
                     Type: %s,
                     Publication Year: %s,
-                    Author: %s
+                    Author: %s,
+                    Publication Period: %s
                     %n
-                """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor());
+                """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor(),book.getPublicationPeriode());
         deleteBook(id);
         memoryBooks.clear();
         memoryBooks.add(0, book);
@@ -165,9 +172,10 @@ public class InventoryServiceImpl implements InventoryService {
                     Title: %s,
                     Type: %s,
                     Publication Year: %s,
-                    Author: %s
+                    Author: %s,
+                    Publication Period: %s
                     %n
-                """,id,memoryBooks.get(0).getCode(),memoryBooks.get(0).getTitle(),memoryBooks.get(0).getType(),memoryBooks.get(0).getPublicationYear(),memoryBooks.get(0).getAuthor());
+                """,id,memoryBooks.get(0).getCode(),memoryBooks.get(0).getTitle(),memoryBooks.get(0).getType(),memoryBooks.get(0).getPublicationYear(),memoryBooks.get(0).getAuthor(),memoryBooks.get(0).getPublicationPeriode());
 
         System.out.println("Book successfully edited in the memory.");
         appendMemoryToDatabase(true);
