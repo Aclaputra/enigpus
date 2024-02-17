@@ -31,6 +31,13 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public BookModel searchBookById(Integer id) {  
+        transferDBDataToMemory(Constant.BOOKS_PATH);
+
+        return memoryBooks.get(id-1);
+    }
+
+    @Override
     public void searchBookByTitle(String title) {
         List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
@@ -51,10 +58,19 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public BookModel searchBookById(Integer id) {  
+    public void listBooks() throws IndexOutOfBoundsException {
         transferDBDataToMemory(Constant.BOOKS_PATH);
-
-        return memoryBooks.get(id-1);
+        for (int i=0; i<memoryBooks.size(); i++) {
+            System.out.printf("""
+                    ============================
+                    Id: %s,
+                    Code: %s,
+                    Title: %s,
+                    Type: %s,
+                    Publication Year: %s
+                    %n
+                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear());
+        }
     }
 
     @Override
@@ -126,23 +142,7 @@ public class InventoryServiceImpl implements InventoryService {
         System.out.println("Database updated.");
     }
 
-    @Override
-    public void listBooks() throws IndexOutOfBoundsException {
-        transferDBDataToMemory(Constant.BOOKS_PATH);
-        for (int i=0; i<memoryBooks.size(); i++) {
-            System.out.printf("""
-                    ============================
-                    Id: %s,
-                    Code: %s,
-                    Title: %s,
-                    Type: %s,
-                    Publication Year: %s
-                    %n
-                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear());
-        }
-    }
-
-    /**
+    /*
      * Get Data From CSV Database Resource to Memory for Indexing
      * @param filepath
      */
