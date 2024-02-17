@@ -12,11 +12,14 @@ import java.util.UUID;
 import com.enigpus.Constant;
 import com.enigpus.model.BookModel;
 
-
+interface HelperInterface {
+    String generateCodeBook(String year, String type);
+}
 /**
  * rule : format  YYYY-A-xxxxx untuk novel, dan YYYY-B-xxxxx untuk majalah
  */
-public class Helper {
+public class Helper implements HelperInterface{
+    @Override
     public String generateCodeBook(String year, String type) {
         String bookTypeCode = "";
         UUID code = UUID.randomUUID();
@@ -29,26 +32,31 @@ public class Helper {
         return String.format("%s-%s-%s", year.toUpperCase(), bookTypeCode, code);
     }
 
+    public static void writeCSVData(FileWriter writer, List<BookModel> books, String filePath) throws IOException {
+        for (BookModel object : books) {
+            BookModel book = (BookModel) object;
+            writer.append(
+                book.getCode() + "," + 
+                book.getTitle() + "," + 
+                book.getType() + "," + 
+                book.getPublicationYear() + "," + 
+                book.getAuthor() + "," +
+                book.getPublicationPeriode() +
+                "\n");
+        } 
+    }
+
     public static void appendToCSV(List<BookModel> books, String filePath, boolean isAppend) {
         List<List<String>> databaseBooks = Helper.convertFromCSV(Constant.BOOKS_PATH);
         int dataExist = 1;
         try (FileWriter writer = new FileWriter(filePath, isAppend)) {
             if (databaseBooks.size() < dataExist || !isAppend)
-                writer.append("code,title,type,publication_year\n");
+                writer.append("code,title,type,publication_year,author,publication_periode\n");
             writeCSVData(writer, books, filePath);
         } catch (IOException e) {
             System.out.println("Error Message: " + e.getMessage());
         }
     } 
-
-    public static void convertToCSV(List<BookModel> books, String filePath) {
-        try (FileWriter writer = new FileWriter(filePath)) {
-            writer.append("code,title,type,publication_year\n");
-            writeCSVData(writer, books, filePath);
-        } catch (IOException e) {
-            System.out.println("Error Message: " + e.getMessage());
-        }
-    }
 
     public static List<List<String>> convertFromCSV(String filePath) {
         List<List<String>> records = new ArrayList<>();
@@ -63,18 +71,6 @@ public class Helper {
         }
 
         return records;
-    }
-
-    public static void writeCSVData(FileWriter writer, List<BookModel> books, String filePath) throws IOException {
-        for (BookModel object : books) {
-            BookModel book = (BookModel) object;
-            writer.append(
-                book.getCode() + "," + 
-                book.getTitle() + "," + 
-                book.getType() + "," + 
-                book.getPublicationYear() + 
-                "\n");
-        } 
     }
 
 }

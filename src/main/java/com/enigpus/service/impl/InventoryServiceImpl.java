@@ -12,16 +12,11 @@ import com.enigpus.util.Helper;
 public class InventoryServiceImpl implements InventoryService {
     private static List<BookModel> memoryBooks = new ArrayList<>();
 
-    @Override
-    public void addBook(BookModel book) {
-        memoryBooks.add(book);
-    }
-
     public static void clearMemory() {
         memoryBooks.clear();
     }
     
-    public void appendMemoryToDatabase(boolean isAppend) {
+    private void appendMemoryToDatabase(boolean isAppend) {
         Helper.appendToCSV(memoryBooks, Constant.BOOKS_PATH, isAppend);
     }
 
@@ -33,15 +28,43 @@ public class InventoryServiceImpl implements InventoryService {
         }
     }
 
+    /*
+     * Get Data From CSV Database Resource to Memory for hIndexing
+     * @param filepath
+     */
+    private void transferDBDataToMemory(String filepath) {
+        List<List<String>> books = Helper.convertFromCSV(filepath);
+        books.remove(0);
+        memoryBooks.clear();
+        for (List<String> book : books) {
+            String code = book.get(0);
+            String title = book.get(1);
+            String type = book.get(2);
+            String publicationYear = book.get(3);
+
+            BookModel bookModel = new BookModel(code, title, type, publicationYear);
+            if (type.equals("novel")) {
+                String author = book.get(4);
+                bookModel.setAuthor(author);
+            }
+            memoryBooks.add(bookModel);
+        }
+    }
+
     @Override
-    public BookModel searchBookById(Integer id) {  
+    public void addBook(BookModel book) throws Exception{
+        memoryBooks.add(book);
+    }
+
+    @Override
+    public BookModel searchBookById(Integer id) throws Exception {  
         transferDBDataToMemory(Constant.BOOKS_PATH);
 
         return memoryBooks.get(id-1);
     }
 
     @Override
-    public void searchBookByTitle(String title) {
+    public void searchBookByTitle(String title) throws Exception {
         List<List<String>> books = Helper.convertFromCSV(Constant.BOOKS_PATH);
         books.remove(0);
         for (List<String> book : books) {
@@ -52,16 +75,17 @@ public class InventoryServiceImpl implements InventoryService {
                     Code: %s,
                     Title: %s,
                     Type: %s,
-                    Publication Year: %s
+                    Publication Year: %s,
+                    Author: %s
                     %n
-                """,book.get(0),book.get(1),book.get(2),book.get(3));
+                """,book.get(0),book.get(1),book.get(2),book.get(3),book.get(4));
                 break;
             }
         }
     }
 
     @Override
-    public void getAllBook() throws IndexOutOfBoundsException {
+    public void getAllBook() throws IndexOutOfBoundsException, Exception {
         transferDBDataToMemory(Constant.BOOKS_PATH);
         for (int i=0; i<memoryBooks.size(); i++) {
             System.out.printf("""
@@ -70,14 +94,16 @@ public class InventoryServiceImpl implements InventoryService {
                     Code: %s,
                     Title: %s,
                     Type: %s,
-                    Publication Year: %s
+                    Publication Year: %s,
+                    Author: %s
                     %n
-                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear());
+                """,i+1,memoryBooks.get(i).getCode(),memoryBooks.get(i).getTitle(),memoryBooks.get(i).getType(),memoryBooks.get(i).getPublicationYear(),memoryBooks.get(i).getAuthor());
         }
+        clearMemory();
     }
 
     @Override
-    public void deleteBook(Integer id) throws IndexOutOfBoundsException, FileNotFoundException {
+    public void deleteBook(Integer id) throws IndexOutOfBoundsException, FileNotFoundException, Exception {
         if (memoryBooks.isEmpty()) {
             transferDBDataToMemory(Constant.BOOKS_PATH);
             if (memoryBooks.isEmpty()) {
@@ -95,9 +121,10 @@ public class InventoryServiceImpl implements InventoryService {
                         Code: %s,
                         Title: %s,
                         Type: %s,
-                        Publication Year: %s
+                        Publication Year: %s,
+                        Author: %s
                         %n
-                    """,id,book.getCode(),book.getTitle(),book.getType(),memoryBooks.get(id-1).getPublicationYear());
+                    """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor());
             memoryBooks.remove(book);
             System.out.println("Book removed from memory.");
             appendMemoryToDatabase(false);
@@ -108,7 +135,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void EditBook(Integer id, BookModel book) throws FileNotFoundException {
+    public void editBook(Integer id, BookModel book) throws FileNotFoundException, IndexOutOfBoundsException, Exception {
         if (memoryBooks.isEmpty()) {
             transferDBDataToMemory(Constant.BOOKS_PATH);
             if (memoryBooks.isEmpty()) {
@@ -123,9 +150,10 @@ public class InventoryServiceImpl implements InventoryService {
                     Code: %s,
                     Title: %s,
                     Type: %s,
-                    Publication Year: %s
+                    Publication Year: %s,
+                    Author: %s
                     %n
-                """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear());
+                """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor());
         deleteBook(id);
         memoryBooks.clear();
         memoryBooks.add(0, book);
@@ -136,32 +164,14 @@ public class InventoryServiceImpl implements InventoryService {
                     Code: %s,
                     Title: %s,
                     Type: %s,
-                    Publication Year: %s
+                    Publication Year: %s,
+                    Author: %s
                     %n
-                """,id,memoryBooks.get(0).getCode(),memoryBooks.get(0).getTitle(),memoryBooks.get(0).getType(),memoryBooks.get(0).getPublicationYear());
+                """,id,memoryBooks.get(0).getCode(),memoryBooks.get(0).getTitle(),memoryBooks.get(0).getType(),memoryBooks.get(0).getPublicationYear(),memoryBooks.get(0).getAuthor());
 
         System.out.println("Book successfully edited in the memory.");
         appendMemoryToDatabase(true);
         System.out.println("Database updated.");
-    }
-
-    /*
-     * Get Data From CSV Database Resource to Memory for Indexing
-     * @param filepath
-     */
-    public void transferDBDataToMemory(String filepath) {
-        List<List<String>> books = Helper.convertFromCSV(filepath);
-        books.remove(0);
-        memoryBooks.clear();
-        for (List<String> book : books) {
-            String code = book.get(0);
-            String title = book.get(1);
-            String type = book.get(2);
-            String publicationYear = book.get(3);
-
-            BookModel bookModel = new BookModel(code, title, type, publicationYear);
-            memoryBooks.add(bookModel);
-        }
     }
     
 }

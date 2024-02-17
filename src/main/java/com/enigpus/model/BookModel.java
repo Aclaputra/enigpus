@@ -11,7 +11,10 @@ public class BookModel extends Book {
     private String title;
     private String type;
     private String publicationYear;
-        
+    private String publicationPeriode;
+
+    private String author;
+
     private Helper helper = new Helper();
     
     public BookModel(String code, String title, String type, String publicationYear) {
@@ -57,6 +60,16 @@ public class BookModel extends Book {
     }
 
     @Override
+    public String getAuthor() {
+        return author;
+    }
+
+    @Override
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    @Override
     public String getPublicationYear() {
         return publicationYear;
     }
@@ -64,6 +77,15 @@ public class BookModel extends Book {
     @Override
     public void setPublicationYear(String publicationYear) {
         this.publicationYear = publicationYear;
+    }
+
+    @Override
+    public String getPublicationPeriode() {
+        return publicationPeriode;
+    }
+    @Override
+    public void setPublicationPeriode(String publicationPeriode) {
+        this.publicationPeriode = publicationPeriode;
     }
     
 }
