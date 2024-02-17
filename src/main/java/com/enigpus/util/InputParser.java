@@ -21,7 +21,7 @@ public class InputParser implements InputParserInterface {
             ██╔══╝░░██║╚████║██║██║░░╚██╗██╔═══╝░██║░░░██║░╚═══██╗
             ███████╗██║░╚███║██║╚██████╔╝██║░░░░░╚██████╔╝██████╔╝
             ╚══════╝╚═╝░░╚══╝╚═╝░╚═════╝░╚═╝░░░░░░╚═════╝░╚═════╝░
-            Made by https://github.com/Aclaputra
+            Made by Muhammad Acla https://github.com/Aclaputra 🎩
                 """);
     }
 
@@ -93,6 +93,7 @@ public class InputParser implements InputParserInterface {
                 case "4":
                     System.out.println("== List Book ==");
                     try {
+                        drawWelcomePopUp();
                         inventoryService.getAllBook();
                     } catch(IndexOutOfBoundsException e) {
                         System.out.println("Database or Memory Inventory still empty. Please insert a Book");
