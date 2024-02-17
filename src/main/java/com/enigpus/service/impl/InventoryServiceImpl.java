@@ -1,9 +1,12 @@
-package com.enigpus;
+package com.enigpus.service.impl;
 
 import java.util.List;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import com.enigpus.Constant;
 import com.enigpus.model.BookModel;
+import com.enigpus.service.InventoryService;
 import com.enigpus.util.Helper;
 
 public class InventoryServiceImpl implements InventoryService {
@@ -58,7 +61,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void listBooks() throws IndexOutOfBoundsException {
+    public void getAllBook() throws IndexOutOfBoundsException {
         transferDBDataToMemory(Constant.BOOKS_PATH);
         for (int i=0; i<memoryBooks.size(); i++) {
             System.out.printf("""

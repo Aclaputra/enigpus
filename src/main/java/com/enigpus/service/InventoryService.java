@@ -1,4 +1,4 @@
-package com.enigpus;
+package com.enigpus.service;
 
 import java.io.FileNotFoundException;
 
@@ -9,6 +9,6 @@ public interface InventoryService {
     void searchBookByTitle(String title);
     BookModel searchBookById(Integer id);
     void deleteBook(Integer id) throws IndexOutOfBoundsException, FileNotFoundException;
-    void listBooks();
+    void getAllBook();
     void EditBook(Integer id, BookModel book) throws FileNotFoundException;
 }

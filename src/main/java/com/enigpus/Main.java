@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import com.enigpus.model.BookModel;
+import com.enigpus.service.impl.InventoryServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
@@ -115,7 +116,7 @@ public class Main {
                 case "4":
                     System.out.println("== List Book ==");
                     try {
-                        inventoryService.listBooks();
+                        inventoryService.getAllBook();
                     } catch(IndexOutOfBoundsException e) {
                         System.out.println("inventory on memory or database is empty.");
                     }
