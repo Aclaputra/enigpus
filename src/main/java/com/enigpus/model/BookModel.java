@@ -1,7 +1,6 @@
 package com.enigpus.model;
 
 
-import com.enigpus.Book;
 import com.enigpus.util.Helper;
 
 /**
@@ -23,16 +22,16 @@ public class BookModel extends Book {
     }
 
     public BookModel(String title, String type, String publicationYear) {
+        this("",title,type,publicationYear);
         this.code = helper.generateCodeBook(publicationYear, type);
-        this.title = title;
-        this.type = type;
-        this.publicationYear = publicationYear;
     }
 
+    @Override
     public String getCode() {
         return code;
     }
 
+    @Override
     public void setCode(String code) {
         this.code = code;
     }
@@ -42,22 +41,27 @@ public class BookModel extends Book {
         return title;
     }
 
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
+    @Override
     public void setType(String type) {
         this.type = type;
     }
 
+    @Override
     public String getPublicationYear() {
         return publicationYear;
     }
 
+    @Override
     public void setPublicationYear(String publicationYear) {
         this.publicationYear = publicationYear;
     }
