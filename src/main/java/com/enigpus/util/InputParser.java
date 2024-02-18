@@ -233,7 +233,11 @@ public class InputParser implements InputParserInterface {
             System.out.println("publication year");
             publicationYear = sc.nextLine();
             if (!Validation.isValidLength(publicationYear, 4, 4)) {
-                System.out.println("Please Input a Valid 4 String for Year. Ex: 2024");
+                System.out.println("Please Input a Valid 4 number for Year. Ex: 2024");
+                break;
+            }
+            if (!Validation.isValidYear(publicationYear)) {
+                System.out.println("Please Input a number for Year.  Ex: 2024");
                 break;
             }
 
@@ -282,26 +286,35 @@ public class InputParser implements InputParserInterface {
         try {
             BookModel gotBook = inventoryService.searchBookById(id);
 
-            System.out.println("Insert title: ");
+            System.out.printf("Insert title: (Enter for default value: %s)%n", gotBook.getTitle());
             title2 = sc.nextLine();
-            if (!Validation.isValidLength(title2, 3, 30)) {
-                System.out.println("Please Input a Valid String between 3 to 30");
-                return;
-            }
+            if (!(title2.equals("") || title2.equals(null)))
+                if (!Validation.isValidLength(title2, 3, 30)) {
+                    System.out.println("Please Input a Valid String between 3 to 30");
+                    return;
+                }
 
-            System.out.println("Insert publication year");
+
+            System.out.printf("Insert publication year: (Enter for default value: %s)%n", gotBook.getPublicationYear());
             publicationYear2 = sc.nextLine();
-            if (!Validation.isValidLength(publicationYear2, 4, 4)) {
-                System.out.println("Please Input a Valid 4 String for Year. Ex: 2024");
-                return;
+            if (!(publicationYear2.equals("") || publicationYear2.equals(null))) {
+                if (!Validation.isValidLength(publicationYear2, 4, 4)) {
+                    System.out.println("Please Input a Valid 4 String for Year. Ex: 2024");
+                    return;
+                }
+                if (!Validation.isValidYear(publicationYear2)) {
+                    System.out.println("Please Input a number for Year.  Ex: 2024");
+                    return;
+                }
             }
 
-            System.out.println("Insert type");
+            System.out.printf("Insert type: (Enter for default value: %s)", gotBook.getType());
             type2 = sc.nextLine();
-            if (!Validation.isValidLength(type2, 3, 30)) {
-                System.out.println("Please Input a Valid String between 3 to 30");
-                return;
-            }
+            if (!(type2.equals("") || type2.equals(null))) 
+                if (!Validation.isValidLength(type2, 3, 30)) {
+                    System.out.println("Please Input a Valid String between 3 to 30");
+                    return;
+                }
 
             title2Trim = title2.trim();
             if (title2Trim.equals("") || title2Trim.equals(null))

@@ -35,14 +35,7 @@ public class Helper implements HelperInterface{
     public static void writeCSVData(FileWriter writer, List<BookModel> books, String filePath) throws IOException {
         for (BookModel object : books) {
             BookModel book = (BookModel) object;
-            writer.append(
-                book.getCode() + "," + 
-                book.getTitle() + "," + 
-                book.getType() + "," + 
-                book.getPublicationYear() + "," + 
-                book.getAuthor() + "," +
-                book.getPublicationPeriode() +
-                "\n");
+            writer.append(book.toString());
         } 
     }
 

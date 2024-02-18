@@ -35,7 +35,7 @@ public class InventoryServiceImpl implements InventoryService {
     private void transferDBDataToMemory(String filepath) {
         List<List<String>> books = Helper.convertFromCSV(filepath);
         books.remove(0);
-        memoryBooks.clear();
+        clearMemory();
         for (List<String> book : books) {
             String code = book.get(0);
             String title = book.get(1);
@@ -162,7 +162,7 @@ public class InventoryServiceImpl implements InventoryService {
                     %n
                 """,id,book.getCode(),book.getTitle(),book.getType(),book.getPublicationYear(),book.getAuthor(),book.getPublicationPeriode());
         deleteBook(id);
-        memoryBooks.clear();
+        clearMemory();
         memoryBooks.add(0, book);
         System.out.printf("""
                     %n

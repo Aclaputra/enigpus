@@ -87,5 +87,16 @@ public class BookModel extends Book {
     public void setPublicationPeriode(String publicationPeriode) {
         this.publicationPeriode = publicationPeriode;
     }
+
+    @Override
+    public String toString() {
+        return 
+        this.code + "," + 
+        this.title + "," + 
+        this.type + "," + 
+        this.publicationYear + "," + 
+        this.author + "," +
+        this.publicationPeriode + "\n";
+    }
     
 }
